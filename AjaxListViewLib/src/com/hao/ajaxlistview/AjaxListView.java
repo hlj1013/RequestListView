@@ -24,7 +24,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ListAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -52,7 +52,7 @@ public class AjaxListView extends ListView implements OnClickListener {
 	private TextView mMore;
 
 	private List<Object> mList;
-	private ListAdapter mAdapter;
+	private BaseAdapter mAdapter;
 
 	private String mUrl;
 	private String mUrlParaName;
@@ -104,7 +104,7 @@ public class AjaxListView extends ListView implements OnClickListener {
 		aq = new AQuery(mContext);
 		mList = new ArrayList<Object>();
 		try {
-			mAdapter = (ListAdapter) mAdapterClass.getConstructor(List.class,
+			mAdapter = (BaseAdapter) mAdapterClass.getConstructor(List.class,
 					Context.class).newInstance(mList, mContext);
 		} catch (Exception e) {
 			Log.w(mContext.getPackageName(), e.getMessage());
@@ -119,8 +119,9 @@ public class AjaxListView extends ListView implements OnClickListener {
 			@Override
 			public void callback(String url, String str, AjaxStatus status) {
 				if (str != null) {
-				Log.i(this.toString(), str);
+					Log.i(this.toString(), str);
 					mList.addAll(JSON.parseArray(str, mBeanClass));
+					mAdapter.notifyDataSetChanged();
 					onComplete();
 				} else {
 					Toast.makeText(mContext, "ajax error", Toast.LENGTH_SHORT)
