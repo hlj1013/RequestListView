@@ -64,6 +64,9 @@ public class AjaxListView extends ListView implements OnClickListener {
 
 	private AQuery aq;
 
+	private OnAjaxCompleteListener mOnAjaxCompleteListener;
+	private OnAjaxErrorListener mOnAjaxErrorListener;
+
 	public AjaxListView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		this.mContext = context;
@@ -124,17 +127,11 @@ public class AjaxListView extends ListView implements OnClickListener {
 					mAdapter.notifyDataSetChanged();
 					onComplete();
 				} else {
-					Toast.makeText(mContext, "ajax error", Toast.LENGTH_SHORT)
-							.show();
+					onAjaxError();
 				}
 				super.callback(url, str, status);
 			}
 		});
-	}
-
-	private void onComplete() {
-		mMore.setText("More...");
-		mMore.setClickable(true);
 	}
 
 	public void putAdapter(Class<?> adapterClass) {
@@ -152,4 +149,37 @@ public class AjaxListView extends ListView implements OnClickListener {
 	public void putUrlParaName(String urlParaName) {
 		this.mUrlParaName = urlParaName;
 	}
+
+	private void onComplete() {
+		mMore.setText("More...");
+		mMore.setClickable(true);
+		if (mOnAjaxCompleteListener != null) {
+			mOnAjaxCompleteListener.onAjaxComplete();
+		}
+	}
+
+	public void onAjaxError() {
+		mMore.setText("More...");
+		mMore.setClickable(true);
+		if (mOnAjaxErrorListener != null) {
+			mOnAjaxErrorListener.onAjaxError();
+		}
+	}
+
+	public void setOnAjaxCompleteListener(OnAjaxCompleteListener l) {
+		mOnAjaxCompleteListener = l;
+	}
+
+	public void setOnAjaxErrorListener(OnAjaxErrorListener l) {
+		mOnAjaxErrorListener = l;
+	}
+
+	public interface OnAjaxCompleteListener {
+		public void onAjaxComplete();
+	}
+
+	public interface OnAjaxErrorListener {
+		public void onAjaxError();
+	}
+
 }

@@ -28,6 +28,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 
 import com.hao.ajaxlistview.AjaxListView;
+import com.hao.ajaxlistview.AjaxListView.OnAjaxCompleteListener;
+import com.hao.ajaxlistview.AjaxListView.OnAjaxErrorListener;
 import com.hao.ajaxlistviewdemo.adapter.SimpleAdapter;
 import com.hao.ajaxlistviewdemo.bean.People;
 
@@ -72,6 +74,27 @@ public class SimpleJsonActivity extends Activity {
 				Toast.makeText(SimpleJsonActivity.this, arg2 + "",
 						Toast.LENGTH_SHORT).show();
 			}
+
+		});
+
+		mListView.setOnAjaxCompleteListener(new OnAjaxCompleteListener() {
+
+			@Override
+			public void onAjaxComplete() {
+				Toast.makeText(SimpleJsonActivity.this, "onAjaxComplete",
+						Toast.LENGTH_SHORT).show();
+			}
+
+		});
+
+		mListView.setOnAjaxErrorListener(new OnAjaxErrorListener() {
+
+			@Override
+			public void onAjaxError() {
+				Toast.makeText(SimpleJsonActivity.this, "onAjaxError",
+						Toast.LENGTH_SHORT).show();
+			}
+
 		});
 
 	}
