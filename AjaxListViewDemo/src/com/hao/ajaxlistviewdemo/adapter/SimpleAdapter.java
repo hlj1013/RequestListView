@@ -95,4 +95,5 @@ public class SimpleAdapter extends BaseAdapter {
 	static class ViewHolder {
 		TextView firstName, lastName, email;
 	}
+
 }

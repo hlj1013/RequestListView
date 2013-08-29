@@ -16,7 +16,11 @@
 package com.hao.ajaxlistview;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -28,7 +32,6 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.androidquery.AQuery;
@@ -55,14 +58,16 @@ public class AjaxListView extends ListView implements OnClickListener {
 	private BaseAdapter mAdapter;
 
 	private String mUrl;
-	private String mUrlParaName;
+	private String mUrlPageParaName;
 
 	private Class<?> mBeanClass;
 	private Class<?> mAdapterClass;
 
 	private int mPageCount;
 
-	private AQuery aq;
+	private AQuery mAq;
+
+	private HashMap<String, String> mParaMap;
 
 	private OnAjaxCompleteListener mOnAjaxCompleteListener;
 	private OnAjaxErrorListener mOnAjaxErrorListener;
@@ -94,6 +99,7 @@ public class AjaxListView extends ListView implements OnClickListener {
 		mMore = (TextView) mFooterView.findViewById(R.id.more);
 		mMore.setText("onLoading...");
 		mMore.setOnClickListener(this);
+		mParaMap = new HashMap<String, String>();
 	}
 
 	@Override
@@ -104,7 +110,7 @@ public class AjaxListView extends ListView implements OnClickListener {
 	}
 
 	public void showResult() {
-		aq = new AQuery(mContext);
+		mAq = new AQuery(mContext);
 		mList = new ArrayList<Object>();
 		try {
 			mAdapter = (BaseAdapter) mAdapterClass.getConstructor(List.class,
@@ -117,8 +123,18 @@ public class AjaxListView extends ListView implements OnClickListener {
 	}
 
 	private void ajax(int pageCount) {
-		String url = mUrl + "?" + mUrlParaName + "=" + pageCount;
-		aq.ajax(url, String.class, new AjaxCallback<String>() {
+		String url = mUrl + "?" + mUrlPageParaName + "=" + pageCount;
+		if (mParaMap.size() != 0) {
+			Set<Map.Entry<String, String>> mapEntrySet = mParaMap.entrySet();
+			Iterator<Map.Entry<String, String>> mapEntryIterator = mapEntrySet
+					.iterator();
+			while (mapEntryIterator.hasNext()) {
+				Map.Entry<String, String> entry = mapEntryIterator.next();
+				url = url + "&" + entry.getKey() + "=" + entry.getValue();
+			}
+		}
+		System.out.println(url);
+		mAq.ajax(url, String.class, new AjaxCallback<String>() {
 			@Override
 			public void callback(String url, String str, AjaxStatus status) {
 				if (str != null) {
@@ -146,8 +162,12 @@ public class AjaxListView extends ListView implements OnClickListener {
 		this.mUrl = url;
 	}
 
-	public void putUrlParaName(String urlParaName) {
-		this.mUrlParaName = urlParaName;
+	public void putUrlPageParaName(String urlPageParaName) {
+		this.mUrlPageParaName = urlPageParaName;
+	}
+
+	public void putUrlPara(String k, String v) {
+		mParaMap.put(k, v);
 	}
 
 	private void onComplete() {

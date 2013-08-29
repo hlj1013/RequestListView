@@ -60,7 +60,7 @@ public class ComplicatedJsonActivity extends Activity {
 		mListView = (AjaxListView) findViewById(R.id.lv);
 		mListView
 				.putUrl("http://gitdemo.duapp.com/AjaxListViewComplicatedData");
-		mListView.putUrlParaName("page");
+		mListView.putUrlPageParaName("page");
 		mListView.putAdapter(ComplcatedAdapter.class);
 		mListView.putBean(Teacher.class);
 		mListView.showResult();

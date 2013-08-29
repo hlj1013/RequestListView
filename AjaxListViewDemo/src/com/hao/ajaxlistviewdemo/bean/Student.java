@@ -25,7 +25,7 @@ package com.hao.ajaxlistviewdemo.bean;
  * @Date 2013-8-28 下午3:04:10
  */
 public class Student {
-	
+
 	private String name;
 	private String weibo;
 

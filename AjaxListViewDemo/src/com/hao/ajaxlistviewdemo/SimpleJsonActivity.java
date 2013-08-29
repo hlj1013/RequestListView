@@ -15,6 +15,8 @@
  */
 package com.hao.ajaxlistviewdemo;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -61,7 +63,8 @@ public class SimpleJsonActivity extends Activity {
 
 		mListView = (AjaxListView) findViewById(R.id.lv);
 		mListView.putUrl("http://gitdemo.duapp.com/AjaxListViewSimpleData");
-		mListView.putUrlParaName("page");
+		mListView.putUrlPageParaName("page");
+		mListView.putUrlPara("peopleId", "1");
 		mListView.putAdapter(SimpleAdapter.class);
 		mListView.putBean(People.class);
 		mListView.showResult();
