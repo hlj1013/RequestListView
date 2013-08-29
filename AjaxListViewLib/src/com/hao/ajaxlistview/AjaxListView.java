@@ -58,7 +58,7 @@ public class AjaxListView extends ListView implements OnClickListener {
 	private BaseAdapter mAdapter;
 
 	private String mUrl;
-	private String mUrlPageParaName;
+	private String mUrlPageParaName = "page";
 
 	private Class<?> mBeanClass;
 	private Class<?> mAdapterClass;
@@ -71,6 +71,9 @@ public class AjaxListView extends ListView implements OnClickListener {
 
 	private OnAjaxCompleteListener mOnAjaxCompleteListener;
 	private OnAjaxErrorListener mOnAjaxErrorListener;
+
+	private String mMoreString = "More...";
+	private String mOnLoadingString = "onLoading...";
 
 	public AjaxListView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -97,14 +100,13 @@ public class AjaxListView extends ListView implements OnClickListener {
 				false);
 		this.addFooterView(mFooterView);
 		mMore = (TextView) mFooterView.findViewById(R.id.more);
-		mMore.setText("onLoading...");
 		mMore.setOnClickListener(this);
 		mParaMap = new HashMap<String, String>();
 	}
 
 	@Override
 	public void onClick(View arg0) {
-		mMore.setText("onLoading...");
+		mMore.setText(mOnLoadingString);
 		mMore.setClickable(false);
 		ajax(++mPageCount);
 	}
@@ -113,16 +115,13 @@ public class AjaxListView extends ListView implements OnClickListener {
 		if (mUrl == null || mUrl == "") {
 			throw new RuntimeException("Url is null or empty. 请设置Url参数。");
 		}
-		if (mUrlPageParaName == null || mUrlPageParaName == "") {
-			throw new RuntimeException(
-					"UrlPageParaName is null or empty. 请设置UrlPageParaName参数。");
-		}
 		if (mAdapterClass == null) {
 			throw new RuntimeException("Adapter is null. 请设置Adapter参数。");
 		}
 		if (mBeanClass == null) {
 			throw new RuntimeException("Bean is null. 请设置Bean参数。");
 		}
+		mMore.setText(mOnLoadingString);
 		mAq = new AQuery(mContext);
 		mList = new ArrayList<Object>();
 		try {
@@ -180,11 +179,16 @@ public class AjaxListView extends ListView implements OnClickListener {
 	}
 
 	public void putUrlPara(String k, String v) {
-		mParaMap.put(k, v);
+		this.mParaMap.put(k, v);
+	}
+
+	public void putFootHint(String beforOnLoading, String onLoading) {
+		this.mMoreString = beforOnLoading;
+		this.mOnLoadingString = onLoading;
 	}
 
 	private void onComplete() {
-		mMore.setText("More...");
+		mMore.setText(mMoreString);
 		mMore.setClickable(true);
 		if (mOnAjaxCompleteListener != null) {
 			mOnAjaxCompleteListener.onAjaxComplete();
@@ -192,7 +196,7 @@ public class AjaxListView extends ListView implements OnClickListener {
 	}
 
 	public void onAjaxError() {
-		mMore.setText("More...");
+		mMore.setText(mMoreString);
 		mMore.setClickable(true);
 		if (mOnAjaxErrorListener != null) {
 			mOnAjaxErrorListener.onAjaxError();

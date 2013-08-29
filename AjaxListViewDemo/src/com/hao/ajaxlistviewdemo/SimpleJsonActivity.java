@@ -65,6 +65,7 @@ public class SimpleJsonActivity extends Activity {
 		mListView.putUrl("http://gitdemo.duapp.com/AjaxListViewSimpleData");
 		mListView.putUrlPageParaName("page");
 		mListView.putUrlPara("peopleId", "1");
+		mListView.putFootHint("更多...", "加载中...");
 		mListView.putAdapter(SimpleAdapter.class);
 		mListView.putBean(People.class);
 		mListView.showResult();
