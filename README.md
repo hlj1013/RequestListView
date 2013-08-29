@@ -189,6 +189,7 @@ mListView.showResult();
 **2013/08/28**
 * 修复了一个对模拟器不支持的Bug。
 * 添加了请求完成、请求错误的回调。
+
 **2013/08/29**
 * 添加了追加参数的方法。
 * 修改putUrlParaName方法名，改为putUrlPageParaName。
