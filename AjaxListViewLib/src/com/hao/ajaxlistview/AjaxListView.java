@@ -110,6 +110,19 @@ public class AjaxListView extends ListView implements OnClickListener {
 	}
 
 	public void showResult() {
+		if (mUrl == null || mUrl == "") {
+			throw new RuntimeException("Url is null or empty. 请设置Url参数。");
+		}
+		if (mUrlPageParaName == null || mUrlPageParaName == "") {
+			throw new RuntimeException(
+					"UrlPageParaName is null or empty. 请设置UrlPageParaName参数。");
+		}
+		if (mAdapterClass == null) {
+			throw new RuntimeException("Adapter is null. 请设置Adapter参数。");
+		}
+		if (mBeanClass == null) {
+			throw new RuntimeException("Bean is null. 请设置Bean参数。");
+		}
 		mAq = new AQuery(mContext);
 		mList = new ArrayList<Object>();
 		try {
