@@ -11,7 +11,7 @@ AjaxListView
 private AjaxListView mListView;
 mListView = (AjaxListView) findViewById(R.id.lv);
 mListView.putUrl("http://gitdemo.duapp.com/AjaxListViewSimpleData");
-mListView.putUrlParaName("page");
+mListView.putUrlPageParaName("page");
 mListView.putAdapter(SimpleAdapter.class);
 mListView.putBean(People.class);
 mListView.showResult();
@@ -160,15 +160,18 @@ public class SimpleAdapter extends BaseAdapter {
 private AjaxListView mListView;
 mListView = (AjaxListView) findViewById(R.id.lv);
 mListView.putUrl("http://gitdemo.duapp.com/AjaxListViewSimpleData");
-mListView.putUrlParaName("page");
+mListView.putUrlPageParaName("page");
+mListView.putUrlPara("peopleId", "1");
 mListView.putAdapter(SimpleAdapter.class);
 mListView.putBean(People.class);
 mListView.showResult();
 ```
 * putUrl传一个你需要请求的网络地址。
 * putUrlParaName传一个你请求的页码的参数名。
-* 比如，putUrl为```"www.baidu.com"```，putUrlParaName为```"page"```。
-* 其实际请求地址为```"www.baidu.com?page=1"```点击更多是1也会随之而变化。
+* 比如，putUrl为```"www.baidu.com"```，putUrlPageParaName```"page"```。
+* 其实际请求地址为：```"www.baidu.com?page=1"```点击更多是1也会随之而变化。
+* 若putUrlPara传入```"peopleId"```和```"1"```则表示在上继续添加参数。
+* 地址即为：```"www.baidu.com?page=1&peopleId=1"```
 * putAdapter，putBean直接传递进来对应的class就可以了。
 * 最后执行一下showResult来显示数据。
 
@@ -183,9 +186,12 @@ mListView.showResult();
 * 新浪微博：[@郝悦兴](http://weibo.com/haoyuexing)
 
 ## 更新说明
-**2013/8/28**
+**2013/08/28**
 * 修复了一个对模拟器不支持的Bug。
 * 添加了请求完成、请求错误的回调。
+**2013/08/29**
+* 添加了追加参数的方法。
+* 修改putUrlParaName方法名，改为putUrlPageParaName。
 
 
   
