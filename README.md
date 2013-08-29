@@ -17,7 +17,6 @@ mListView.putBean(People.class);
 mListView.showResult();
 ```
 ## 使用方法
-
 下面展示一些Demo中的例子。并做出尽可能详细的说明。
 
 **Json:**
@@ -170,7 +169,7 @@ mListView.showResult();
 * putUrl传一个你需要请求的网络地址。
 * putUrlPageParaName传一个你请求的页码的参数名。默认值为```"page"```
 * 比如，putUrl为```"www.baidu.com"```，putUrlPageParaName```"page"```。
-* 其实际请求地址为：```"www.baidu.com?page=1"```点击更多是1也会随之而变化。
+* 其实际请求地址为：```"www.baidu.com?page=1"```点击更多是时，1也会随之而变化。
 * 若putUrlPara传入```"peopleId"```和```"1"```则表示在上继续添加参数。
 * 地址即为：```"www.baidu.com?page=1&peopleId=1"```
 * putAdapter，putBean直接传递进来对应的class就可以了。
@@ -183,8 +182,18 @@ mListView.showResult();
 ```
 * 你懂的。
 
-## 关于
+## 特别鸣谢
+* 特别感谢三位大神，很庆幸认识这三位大神。
+* 基本都是有问必答，而且都很有耐心。分分钟涨姿势。
+* **Tank** —— [GitHub](https://github.com/TangKe)
+* **Alex YU** —— [新浪微博](http://weibo.com/alexyuyxj)
+* **任飘渺** —— [腾讯微博](http://t.qq.com/ymiou2008)
+* 还有坦克的设计和大熊的测试，感谢二位。
+* **Special** —— [花瓣](http://huaban.com/linbei003)
+* **大熊** —— [新浪微博](http://weibo.com/u/2295430670)
 
+## 关于作者
+* 苦逼一个。快失业了，有介绍工作的咩？
 * 新浪微博：[@郝悦兴](http://weibo.com/haoyuexing)
 
 ## 更新说明
