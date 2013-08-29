@@ -162,17 +162,19 @@ mListView = (AjaxListView) findViewById(R.id.lv);
 mListView.putUrl("http://gitdemo.duapp.com/AjaxListViewSimpleData");
 mListView.putUrlPageParaName("page");
 mListView.putUrlPara("peopleId", "1");
+mListView.putFootHint("更多...", "加载中...");
 mListView.putAdapter(SimpleAdapter.class);
 mListView.putBean(People.class);
 mListView.showResult();
 ```
 * putUrl传一个你需要请求的网络地址。
-* putUrlParaName传一个你请求的页码的参数名。
+* putUrlPageParaName传一个你请求的页码的参数名。默认值为```"page"```
 * 比如，putUrl为```"www.baidu.com"```，putUrlPageParaName```"page"```。
 * 其实际请求地址为：```"www.baidu.com?page=1"```点击更多是1也会随之而变化。
 * 若putUrlPara传入```"peopleId"```和```"1"```则表示在上继续添加参数。
 * 地址即为：```"www.baidu.com?page=1&peopleId=1"```
 * putAdapter，putBean直接传递进来对应的class就可以了。
+* putFootHint方法可更改footer的提示信息。默认普通提示为```"More..."```加载中为```"onLoading..."```
 * 最后执行一下showResult来显示数据。
 
 ## 友情提示
@@ -192,7 +194,9 @@ mListView.showResult();
 
 **2013/08/29**
 * 添加了追加参数的方法。
-* 修改putUrlParaName方法名，改为putUrlPageParaName。
+* 修改了putUrlParaName方法名，改为putUrlPageParaName。
+* 添加了修改footer的方法以及footer的默认值。
+* 修改了putUrlPageParaName的方法参数，为其添加默认值。
 
 
   
