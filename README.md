@@ -1,19 +1,32 @@
-AjaxListView
+RequestListView
 ============
 
-* AjaxListView是基于ListView的控件。
+* RequestListView是基于ListView的控件。
 * 通过少量参数达到分页效果。
-* 请求源于网络的Json。
-* 解析获取的Json数据。
+* 请求源于网络的Json数据。
 * 支持请求完成、请求错误的回调。
 
 ```java
 private AjaxListView mListView;
-mListView = (AjaxListView) findViewById(R.id.lv);
-mListView.putUrl("http://gitdemo.duapp.com/AjaxListViewSimpleData");
-mListView.putUrlPageParaName("page");
-mListView.putAdapter(SimpleAdapter.class);
-mListView.putBean(People.class);
+
+mListView = (RequestListView) findViewById(R.id.requestlv);
+mListView.setUrl("http://gitdemo.duapp.com/RequestData");
+mListView.setAdapter(mAdapter);
+mListView.setOnCompleteListener(new OnCompleteListener() {
+
+	@Override
+	public void onSuccess(String str) {
+		// TODO Auto-generated method stub
+				
+	}
+
+	@Override
+	public void onFail() {
+		// TODO Auto-generated method stub
+				
+	}
+
+});
 mListView.showResult();
 ```
 ## 使用方法
@@ -22,45 +35,33 @@ mListView.showResult();
 **Json:**
 ```json
 [
-  {
-    "firstName": "Hao-1",
-    "lastName": "Yoson-1",
-    "email": "Haoyuexing@gmail.com"
-  },
-  {
-    "firstName": "Hao-2",
-    "lastName": "Yoson-2",
-    "email": "Haoyuexing@gmail.com"
-  },
-  {
-    "firstName": "Hao-3",
-    "lastName": "Yoson-3",
-    "email": "Haoyuexing@gmail.com"
-  }
+    {
+        "name": "YosonHao-1",
+        "email": "Haoyuexing@gmail.com-1"
+    },
+    {
+        "name": "YosonHao-2",
+        "email": "Haoyuexing@gmail.com-2"
+    },
+    {
+        "name": "YosonHao-3",
+        "email": "Haoyuexing@gmail.com-3"
+    }
 ]
 ```
 **Bean:**
 ```java
-public class People {
+public class ArrayBean {
 
-	private String firstName;
-	private String lastName;
+	private String name;
 	private String email;
 
-	public String getFirstName() {
-		return firstName;
+	public String getName() {
+		return name;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getEmail() {
@@ -73,27 +74,24 @@ public class People {
 
 	@Override
 	public String toString() {
-		return "People [firstName=" + firstName + ", lastName=" + lastName
-				+ ", email=" + email + "]";
+		return "ARArrayBean [name=" + name + ", email=" + email + "]";
 	}
 
 }
 ```
-* 控件集成了fastjson包。因为是自动解析，所以实体类的格式应该与你所请求的Json数据对应
-* 不难看出，这段Json是一个JsonArray，里面包含着很多‘people’实体。
-* 所以我们需要建立一个对应的People的实体类（当然这个名字，your wish。），字段名与Json中的Key相同即可。
+* 一个实体类，这个基本没什么可解释的。
 * 实体类中toString()是可有可无的，有时候为了测试方便，我个人喜欢加上。
 
 **Adapter:**
 ```java
-public class SimpleAdapter extends BaseAdapter {
+public class ArrayAdapter extends BaseAdapter {
 
 	ViewHolder mHolder;
 
 	private Context mContext;
-	private List<People> mList = new ArrayList<People>();
+	private List<ArrayBean> mList = new ArrayList<ArrayBean>();
 
-	public SimpleAdapter(List<People> list, Context context) {
+	public ArrayAdapter(List<ArrayBean> list, Context context) {
 		super();
 		this.mList = list;
 		this.mContext = context;
@@ -120,31 +118,29 @@ public class SimpleAdapter extends BaseAdapter {
 		View view = arg1;
 
 		if (view == null) {
-			view = LayoutInflater.from(mContext).inflate(R.layout.simple_item,
+			view = LayoutInflater.from(mContext).inflate(R.layout.item_array,
 					null);
 			mHolder = new ViewHolder();
-			mHolder.firstName = (TextView) view.findViewById(R.id.firstName);
-			mHolder.lastName = (TextView) view.findViewById(R.id.lastName);
+			mHolder.name = (TextView) view.findViewById(R.id.name);
 			mHolder.email = (TextView) view.findViewById(R.id.email);
 			view.setTag(mHolder);
 		} else {
 			mHolder = (ViewHolder) view.getTag();
 		}
 
-		People people = mList.get(arg0);
-		if (people != null) {
-			mHolder.firstName.setText("FirstName:" + people.getFirstName());
-			mHolder.lastName.setText("LastName:" + people.getLastName());
-			mHolder.email.setText("Email:" + people.getEmail());
+		ArrayBean arrayBean = mList.get(arg0);
+		if (arrayBean != null) {
+			mHolder.name.setText("Name:" + arrayBean.getName());
+			mHolder.email.setText("Email:" + arrayBean.getEmail());
 		}
 
 		return view;
 	}
 
 	static class ViewHolder {
-		TextView firstName, lastName, email;
+		TextView name, email;
 	}
-	
+
 }
 ```
 * 自定义Adapter还是比较常用的。我个人常年使用自定义的。=.=
@@ -153,28 +149,48 @@ public class SimpleAdapter extends BaseAdapter {
 * inflate你的item布局，得到布局上的控件，为控件set上数据。
 * 之前传进来了List，你的数据自然是从list.get(i)中得到的。
 * 想效率稍微高一点儿，可以像我一样用ViewHolder，当然不用也是可以达到效果的。
+* Adapter也没啥可说了，一个人有一个人的写法儿。
 
 **Activity:**
 ```java
 private AjaxListView mListView;
-mListView = (AjaxListView) findViewById(R.id.lv);
-mListView.putUrl("http://gitdemo.duapp.com/AjaxListViewSimpleData");
-mListView.putUrlPageParaName("page");
-mListView.putUrlPara("peopleId", "1");
-mListView.putFootHint("更多...", "加载中...");
-mListView.putAdapter(SimpleAdapter.class);
-mListView.putBean(People.class);
+mListView = (RequestListView) findViewById(R.id.requestlv);
+mListView.setUrl("http://gitdemo.duapp.com/RequestData");
+mListView.setAdapter(mAdapter);
+mListView.setUrlPageParaName("page");
+mListView.setUrlPara("peopleId", "1");
+mListView.setFooterHint("更多...", "加载中...");
+mListView.setFooterBackground(R.drawable.footer_bg);
+mListView.setProgressDrawable(R.drawable.progress);
+mListView.setOnCompleteListener(new OnCompleteListener() {
+
+	@Override
+	public void onFail() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onSuccess(String str) {
+		// TODO Auto-generated method stub
+
+	}
+
+});
 mListView.showResult();
 ```
-* putUrl传一个你需要请求的网络地址。
-* putUrlPageParaName传一个你请求的页码的参数名。默认值为```"page"```
-* 比如，putUrl为```"www.baidu.com"```，putUrlPageParaName```"page"```。
+**下面是重点部分**
+* setUrl传一个你需要请求的网络地址。
+* setUrlPageParaName传一个你请求的页码的参数名。默认值为```"page"```
+* 比如，setUrl为```"www.baidu.com"```，putUrlPageParaName```"page"```。
 * 其实际请求地址为：```"www.baidu.com?page=1"```点击更多是时，1也会随之而变化。
-* 若putUrlPara传入```"peopleId"```和```"1"```则表示在上继续添加参数。
+* 若setUrlPara传入```"peopleId"```和```"1"```则表示在上继续添加参数。
 * 地址即为：```"www.baidu.com?page=1&peopleId=1"```
-* putAdapter，putBean直接传递进来对应的class就可以了。
-* putFootHint方法可更改footer的提示信息。默认普通提示为```"More..."```加载中为```"onLoading..."```
-* 最后执行一下showResult来显示数据。
+* setFootHint方法可更改footer的提示信息。默认普通提示为```"More..."```加载中为```"onLoading..."```
+* setFooterBackground方法可以用来设置你自己的footer背景，我这里用了一个xml来表示。默认为空白。
+* setProgressDrawable方法可以用来设置你的进度条样式，其原理是一张图片在进行旋转，因此，你只需要传一张圆形的进度条图片就行，它会自己转的。
+* setOnCompleteListener方法，这个很明显是请求完成以后的回调了，在onSuccess中会带进来一个Sring类型的str参数，这个参数就是你请求以后的结果，也就是你所请求的json数据。onFail的是失败的毁掉，比如没有网络之类的。这两个，请大家自行处理。
+* 最后记得执行一下showResult来运行整个过程。
 
 ## 友情提示
 ```xml
@@ -206,6 +222,3 @@ mListView.showResult();
 * 修改了putUrlParaName方法名，改为putUrlPageParaName。
 * 添加了修改footer的方法以及footer的默认值。
 * 修改了putUrlPageParaName的方法参数，为其添加默认值。
-
-
-  
