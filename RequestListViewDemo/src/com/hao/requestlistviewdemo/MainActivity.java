@@ -52,12 +52,12 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onFail() {
-				
+
 			}
 
 			@Override
-			public void onSuccess(Object obj) {
-				mList.addAll(JSON.parseArray(obj.toString(), ArrayBean.class));
+			public void onSuccess(String str) {
+				mList.addAll(JSON.parseArray(str, ArrayBean.class));
 				mAdapter.notifyDataSetChanged();
 			}
 
