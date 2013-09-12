@@ -47,12 +47,13 @@ public class MainActivity extends Activity {
 		mListView.setUrlPageParaName("page");
 		mListView.setUrlPara("peopleId", "1");
 		mListView.setFooterHint("更多...", "加载中...");
-		mListView.setFooterDrawable(R.drawable.progress);
+		mListView.setFooterBackground(R.drawable.footer_bg);
+		mListView.setProgressDrawable(R.drawable.progress);
 		mListView.setOnCompleteListener(new OnCompleteListener() {
 
 			@Override
 			public void onFail() {
-
+				
 			}
 
 			@Override

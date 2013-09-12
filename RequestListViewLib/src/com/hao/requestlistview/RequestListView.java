@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -63,7 +62,8 @@ public class RequestListView extends ListView implements OnClickListener {
 
 	private ImageView mProgress;
 
-	private int mFooterDrawable;
+	private int mProgressDrawable;
+	private int mFooterBackground;
 
 	private String mResult;
 
@@ -96,13 +96,13 @@ public class RequestListView extends ListView implements OnClickListener {
 		this.addFooterView(mFooterView);
 		mMore = (TextView) mFooterView.findViewById(R.id.more);
 		mProgress = (ImageView) mFooterView.findViewById(R.id.progress);
-
-		mMore.setOnClickListener(this);
+		mFooterView.setOnClickListener(this);
 		mParaMap = new HashMap<String, String>();
 	}
 
+	@SuppressWarnings("deprecation")
 	private RotateAnimation getAnim() {
-		Drawable drawable = getResources().getDrawable(mFooterDrawable);
+		Drawable drawable = getResources().getDrawable(mProgressDrawable);
 		mProgress.setBackgroundDrawable(drawable);
 		RotateAnimation anim = new RotateAnimation(0f, 360f,
 				Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
@@ -117,8 +117,8 @@ public class RequestListView extends ListView implements OnClickListener {
 	@Override
 	public void onClick(View arg0) {
 		mMore.setText(mLoadingString);
-		mMore.setClickable(false);
-		if (mFooterDrawable != 0) {
+		mFooterView.setClickable(false);
+		if (mProgressDrawable != 0) {
 			mProgress.setVisibility(View.VISIBLE);
 			mProgress.startAnimation(getAnim());
 		}
@@ -129,9 +129,12 @@ public class RequestListView extends ListView implements OnClickListener {
 		if (mUrl == null || mUrl == "") {
 			throw new RuntimeException("Url is null or empty. 请设置Url参数。");
 		}
-		if (mFooterDrawable != 0) {
+		if (mProgressDrawable != 0) {
 			mProgress.setVisibility(View.VISIBLE);
 			mProgress.startAnimation(getAnim());
+		}
+		if (mFooterBackground!=0) {
+			mFooterView.setBackgroundResource(mFooterBackground);
 		}
 		mMore.setText(mLoadingString);
 		mAq = new AQuery(mContext);
@@ -181,8 +184,12 @@ public class RequestListView extends ListView implements OnClickListener {
 		this.mLoadingString = loading;
 	}
 
-	public void setFooterDrawable(int drawable) {
-		mFooterDrawable = drawable;
+	public void setFooterBackground(int background) {
+		mFooterBackground=background;
+	}
+
+	public void setProgressDrawable(int drawable) {
+		mProgressDrawable = drawable;
 	}
 
 	public String getResult() {
@@ -195,7 +202,7 @@ public class RequestListView extends ListView implements OnClickListener {
 
 	private void onComplete(int res) {
 		mMore.setText(mMoreString);
-		mMore.setClickable(true);
+		mFooterView.setClickable(true);
 		mProgress.setAnimation(null);
 		mProgress.setVisibility(View.GONE);
 		if (mOnCompleteListener != null) {
