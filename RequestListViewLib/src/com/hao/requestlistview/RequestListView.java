@@ -65,7 +65,7 @@ public class RequestListView extends ListView implements OnClickListener {
 
 	private int mFooterDrawable;
 
-	private Object mResult;
+	private String mResult;
 
 	private static final int REQUEST_SUCCESS = 1;
 	private static final int REQUEST_FAIL = 2;
@@ -101,10 +101,9 @@ public class RequestListView extends ListView implements OnClickListener {
 		mParaMap = new HashMap<String, String>();
 	}
 
-	@SuppressLint("NewApi")
 	private RotateAnimation getAnim() {
 		Drawable drawable = getResources().getDrawable(mFooterDrawable);
-		mProgress.setBackground(drawable);
+		mProgress.setBackgroundDrawable(drawable);
 		RotateAnimation anim = new RotateAnimation(0f, 360f,
 				Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
 				0.5f);
@@ -151,16 +150,16 @@ public class RequestListView extends ListView implements OnClickListener {
 			}
 		}
 
-		mAq.ajax(url, Object.class, new AjaxCallback<Object>() {
+		mAq.ajax(url, String.class, new AjaxCallback<String>() {
 			@Override
-			public void callback(String url, Object obj, AjaxStatus status) {
-				if (obj != null) {
-					mResult = obj;
+			public void callback(String url, String str, AjaxStatus status) {
+				if (str != null) {
+					mResult = str;
 					onComplete(REQUEST_SUCCESS);
 				} else {
 					onComplete(REQUEST_FAIL);
 				}
-				super.callback(url, obj, status);
+				super.callback(url, str, status);
 			}
 		});
 	}
@@ -186,7 +185,7 @@ public class RequestListView extends ListView implements OnClickListener {
 		mFooterDrawable = drawable;
 	}
 
-	public Object getResult() {
+	public String getResult() {
 		return mResult;
 	}
 
@@ -217,7 +216,7 @@ public class RequestListView extends ListView implements OnClickListener {
 
 	public interface OnCompleteListener {
 
-		public void onSuccess(Object obj);
+		public void onSuccess(String str);
 
 		public void onFail();
 
