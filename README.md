@@ -29,6 +29,12 @@ mListView.setOnCompleteListener(new OnCompleteListener() {
 });
 mListView.showResult();
 ```
+## 效果图
+
+![image01](http://github.com/haoyuexing/RequestListView/raw/master/ScreenShot/image01.png)
+![image02](http://github.com/haoyuexing/RequestListView/raw/master/ScreenShot/image02.png)
+![image03](http://github.com/haoyuexing/RequestListView/raw/master/ScreenShot/image03.png)
+
 ## 使用方法
 下面展示一些Demo中的例子。并做出尽可能详细的说明。
 
