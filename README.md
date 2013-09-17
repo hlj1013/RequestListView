@@ -228,3 +228,11 @@ mListView.showResult();
 * 修改了putUrlParaName方法名，改为putUrlPageParaName。
 * 添加了修改footer的方法以及footer的默认值。
 * 修改了putUrlPageParaName的方法参数，为其添加默认值。
+
+**2013/09/11**
+* 整个项目更名为RequestListView。删除自动解析的功能和相关方法，使用户能更自由的操作所返回的Json数据。
+
+**2013/09/12**
+* 将回调类型改为String
+* 添加了自定义footer背景的方法。
+* 添加了自定义progress的方法。
