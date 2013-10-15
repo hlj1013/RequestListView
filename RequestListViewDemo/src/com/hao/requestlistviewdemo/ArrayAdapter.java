@@ -74,7 +74,6 @@ public class ArrayAdapter extends BaseAdapter {
 			mHolder.name.setText("Name:" + arrayBean.getName());
 			mHolder.email.setText("Email:" + arrayBean.getEmail());
 		}
-
 		return view;
 	}
 

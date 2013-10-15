@@ -20,6 +20,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.hao.requestlistview.RequestListView;
@@ -52,15 +53,27 @@ public class MainActivity extends Activity {
 		mListView.setOnCompleteListener(new OnCompleteListener() {
 
 			@Override
-			public void onFail() {
-				
+			public void onRefreshSuccess(String str) {
+				mList.clear();
+				mList.addAll(JSON.parseArray(str, ArrayBean.class));
+				mAdapter.notifyDataSetChanged();			
+				Toast.makeText(MainActivity.this, "刷新", Toast.LENGTH_SHORT).show();
+				System.out.println("刷新--"+str);
 			}
 
 			@Override
-			public void onSuccess(String str) {
+			public void onMoreSuccess(String str) {
 				mList.addAll(JSON.parseArray(str, ArrayBean.class));
-				mAdapter.notifyDataSetChanged();
+				mAdapter.notifyDataSetChanged();				
+				Toast.makeText(MainActivity.this, "更多", Toast.LENGTH_SHORT).show();
+				System.out.println("更多--"+str);
 			}
+
+			@Override
+			public void onFail() {
+				Toast.makeText(MainActivity.this, "失败", Toast.LENGTH_SHORT).show();
+			}
+		
 
 		});
 		mListView.showResult();
