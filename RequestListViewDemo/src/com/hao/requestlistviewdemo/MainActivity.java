@@ -56,24 +56,26 @@ public class MainActivity extends Activity {
 			public void onRefreshSuccess(String str) {
 				mList.clear();
 				mList.addAll(JSON.parseArray(str, ArrayBean.class));
-				mAdapter.notifyDataSetChanged();			
-				Toast.makeText(MainActivity.this, "刷新", Toast.LENGTH_SHORT).show();
-				System.out.println("刷新--"+str);
+				mAdapter.notifyDataSetChanged();
+				Toast.makeText(MainActivity.this, "刷新", Toast.LENGTH_SHORT)
+						.show();
+				System.out.println("刷新--" + str);
 			}
 
 			@Override
 			public void onMoreSuccess(String str) {
 				mList.addAll(JSON.parseArray(str, ArrayBean.class));
-				mAdapter.notifyDataSetChanged();				
-				Toast.makeText(MainActivity.this, "更多", Toast.LENGTH_SHORT).show();
-				System.out.println("更多--"+str);
+				mAdapter.notifyDataSetChanged();
+				Toast.makeText(MainActivity.this, "更多", Toast.LENGTH_SHORT)
+						.show();
+				System.out.println("更多--" + str);
 			}
 
 			@Override
 			public void onFail() {
-				Toast.makeText(MainActivity.this, "失败", Toast.LENGTH_SHORT).show();
+				Toast.makeText(MainActivity.this, "失败", Toast.LENGTH_SHORT)
+						.show();
 			}
-		
 
 		});
 		mListView.showResult();

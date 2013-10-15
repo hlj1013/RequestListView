@@ -98,6 +98,8 @@ public class RequestListView extends ListView implements OnClickListener,
 	// header 高度
 	private int mHeaderHeight;
 
+	private int mFirstVisibleItem;
+
 	// header刷新时间
 	SimpleDateFormat mSimpleDateFormat;
 
@@ -196,8 +198,8 @@ public class RequestListView extends ListView implements OnClickListener,
 	}
 
 	private void setHeaderPadding(int padding) {
-		this.setPadding(this.getPaddingLeft(),padding,
-				this.getPaddingRight(), this.getPaddingBottom());
+		this.setPadding(this.getPaddingLeft(), padding, this.getPaddingRight(),
+				this.getPaddingBottom());
 	}
 
 	@Override
@@ -235,42 +237,6 @@ public class RequestListView extends ListView implements OnClickListener,
 					MeasureSpec.UNSPECIFIED);
 		}
 		child.measure(childWidthSpec, childHeightSpec);
-	}
-
-	/**
-	 * 手势
-	 */
-	@Override
-	public boolean onTouchEvent(MotionEvent ev) {
-		switch (ev.getAction()) {
-		case MotionEvent.ACTION_UP:
-			if (mPullRefreshState == OVER_PULL_REFRESH) {
-				// 下拉状态的情况下 松手listview归位
-				this.setPadding(this.getPaddingLeft(), 0,
-						this.getPaddingRight(), this.getPaddingBottom());
-				// 刷新状态更新为-正在刷新
-				mPullRefreshState = EXIT_PULL_REFRESH;
-				mHeaderHint.setText("正在刷新");
-				ajax(1, TYPE_REFRESH);
-				mPageCount = 1;
-			}
-			break;
-		case MotionEvent.ACTION_DOWN:
-			mDownY = ev.getY();
-			setHeaderPadding(0);
-			break;
-		case MotionEvent.ACTION_MOVE:
-			mMoveY = ev.getY();
-			if (mPullRefreshState == OVER_PULL_REFRESH) {
-				// 如果状态为松手刷新状态
-				this.setPadding(this.getPaddingLeft(),
-						(int) ((mMoveY - mDownY) / 3), this.getPaddingRight(),
-						this.getPaddingBottom());
-			}
-			break;
-		}
-
-		return super.onTouchEvent(ev);
 	}
 
 	/**
@@ -455,16 +421,19 @@ public class RequestListView extends ListView implements OnClickListener,
 	 * @param res
 	 */
 	private void onComplete(int res) {
-		// 设置footer文字
-		mFooterMore.setText(mMoreString);
-		// 成功后更多按钮可用
-		mFooterView.setClickable(true);
-		// 取消进度条动画
-		mFooterProgress.setAnimation(null);
-		// 进度条设置为不可见
-		mFooterProgress.setVisibility(View.GONE);
+
 		// 刷新状态更新为-正常状态
 		mPullRefreshState = NONE_PULL_REFRESH;
+		if (mReqType == TYPE_MORE) {
+			// 设置footer文字
+			mFooterMore.setText(mMoreString);
+			// 成功后更多按钮可用
+			mFooterView.setClickable(true);
+			// 取消进度条动画
+			mFooterProgress.setAnimation(null);
+			// 进度条设置为不可见
+			mFooterProgress.setVisibility(View.GONE);
+		}
 		if (mReqType == TYPE_REFRESH) {
 			setHeaderPadding(-mHeaderHeight);
 			// 刷新后的提示为下拉刷新
@@ -472,7 +441,6 @@ public class RequestListView extends ListView implements OnClickListener,
 			// 刷新后的时间为当前时间
 			mHeaderTime.setText(mSimpleDateFormat.format(new Date()));
 		}
-
 		if (mOnCompleteListener != null) {
 			switch (res) {
 			// 请求完成后执行对应的监听
@@ -517,6 +485,7 @@ public class RequestListView extends ListView implements OnClickListener,
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem,
 			int visibleItemCount, int totalItemCount) {
+		mFirstVisibleItem = firstVisibleItem;
 		if (mCurrentScrollState == SCROLL_STATE_TOUCH_SCROLL
 				&& firstVisibleItem == 0
 				&& (mHeaderView.getBottom() >= 0 && mHeaderView.getBottom() < mHeaderHeight)) {
@@ -560,4 +529,47 @@ public class RequestListView extends ListView implements OnClickListener,
 		mCurrentScrollState = scrollState;
 	}
 
+	/**
+	 * 手势
+	 */
+	@Override
+	public boolean onTouchEvent(MotionEvent ev) {
+		switch (ev.getAction()) {
+		case MotionEvent.ACTION_UP:
+			if (mPullRefreshState == OVER_PULL_REFRESH) {
+				// 下拉状态的情况下 松手listview归位
+				this.setPadding(this.getPaddingLeft(), 0,
+						this.getPaddingRight(), this.getPaddingBottom());
+				// 刷新状态更新为-正在刷新
+				mPullRefreshState = EXIT_PULL_REFRESH;
+				mHeaderHint.setText("正在刷新");
+				ajax(1, TYPE_REFRESH);
+				mPageCount = 1;
+			}
+			if (mPullRefreshState == ENTER_PULL_REFRESH) {
+				// 第一项置顶？？？
+				setSelection(1);
+				mPullRefreshState = NONE_PULL_REFRESH;
+			}
+			break;
+		case MotionEvent.ACTION_DOWN:
+			mDownY = ev.getY();
+			if (mPullRefreshState == NONE_PULL_REFRESH
+					&& mFirstVisibleItem == 0) {
+				setHeaderPadding(0);
+			}
+			break;
+		case MotionEvent.ACTION_MOVE:
+			mMoveY = ev.getY();
+			if (mPullRefreshState == OVER_PULL_REFRESH) {
+				// 如果状态为松手刷新状态
+				this.setPadding(this.getPaddingLeft(),
+						(int) ((mMoveY - mDownY) / 3), this.getPaddingRight(),
+						this.getPaddingBottom());
+			}
+			break;
+		}
+
+		return super.onTouchEvent(ev);
+	}
 }
