@@ -184,7 +184,7 @@ public class RequestListView extends ListView implements OnClickListener,
 		// new一个hashmap存放其他后续的参数
 		mParaMap = new HashMap<String, String>();
 		// 设置header时间
-		mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+		mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		mHeaderTime.setText(mSimpleDateFormat.format(new Date()));
 
 		// 设置OnScroll监听
@@ -448,7 +448,7 @@ public class RequestListView extends ListView implements OnClickListener,
 				mOnCompleteListener.onRefreshSuccess(mResult);
 				break;
 			case REQUEST_MORE_SUCCESS:
-				mOnCompleteListener.onMoreSuccess(mResult);
+				mOnCompleteListener.onMoreSuccess(mResult); 
 				break;
 			case REQUEST_FAIL:
 				mOnCompleteListener.onFail();
