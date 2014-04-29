@@ -10,30 +10,25 @@ RequestListView
 private AjaxListView mListView;
 
 mListView = (RequestListView) findViewById(R.id.requestlv);
-mListView.setUrl("http://gitdemo.duapp.com/RequestData");
 mListView.setAdapter(mAdapter);
+mListView.showResult("http://gitdemo.duapp.com/RequestData");
 mListView.setOnCompleteListener(new OnCompleteListener() {
-
-	@Override
+	@Override		
 	public void onSuccess(String str) {
-		// TODO Auto-generated method stub
-				
+		mList.addAll(JSON.parseArray(str, ArrayBean.class));
+		mAdapter.notifyDataSetChanged();
 	}
-
 	@Override
-	public void onFail() {
-		// TODO Auto-generated method stub
-				
-	}
+	public void onFail(String str) {
 
+	}
 });
-mListView.showResult();
 ```
 ## 效果图
 
-![image01](http://github.com/haoyuexing/RequestListView/raw/master/ScreenShot/image01.png)
-![image02](http://github.com/haoyuexing/RequestListView/raw/master/ScreenShot/image02.png)
-![image03](http://github.com/haoyuexing/RequestListView/raw/master/ScreenShot/image03.png)
+![image01](http://github.com/haoyuexing/RequestListView/raw/master/ScreenSnap/image01.png)
+![image02](http://github.com/haoyuexing/RequestListView/raw/master/ScreenSnap/image02.png)
+![image03](http://github.com/haoyuexing/RequestListView/raw/master/ScreenSnap/image03.png)
 
 ## 使用方法
 下面展示一些Demo中的例子。并做出尽可能详细的说明。
@@ -161,42 +156,43 @@ public class ArrayAdapter extends BaseAdapter {
 ```java
 private AjaxListView mListView;
 mListView = (RequestListView) findViewById(R.id.requestlv);
-mListView.setUrl("http://gitdemo.duapp.com/RequestData");
 mListView.setAdapter(mAdapter);
-mListView.setUrlPageParaName("page");
-mListView.setUrlPara("peopleId", "1");
-mListView.setFooterHint("更多...", "加载中...");
-mListView.setFooterBackground(R.drawable.footer_bg);
-mListView.setProgressDrawable(R.drawable.progress);
+		
+mListView.setFooterBackgroundResource(R.drawable.footer_bg);
+mListView.setFooterProgressDrawableResource(R.drawable.progress);
+mListView.setFooterHint("正在加载...", "更多...");
+mListView.setRequestType(RequestListView.TYPE_POST);
+mListView.setPageName("page");
+HashMap<String, String> params=new HashMap<String, String>();
+params.put("参数名", "参数值");
+mListView.showResult("http://gitdemo.duapp.com/RequestData",params);
 mListView.setOnCompleteListener(new OnCompleteListener() {
 
 	@Override
-	public void onFail() {
-		// TODO Auto-generated method stub
-
+	public void onSuccess(String str) {
+		mList.addAll(JSON.parseArray(str, ArrayBean.class));
+		mAdapter.notifyDataSetChanged();
 	}
 
 	@Override
-	public void onSuccess(String str) {
-		// TODO Auto-generated method stub
+	public void onFail(String str) {
 
 	}
-
+	
 });
-mListView.showResult();
 ```
 **下面是重点部分**
-* setUrl传一个你需要请求的网络地址。
-* setUrlPageParaName传一个你请求的页码的参数名。默认值为```"page"```
-* 比如，setUrl为```"www.baidu.com"```，putUrlPageParaName```"page"```。
-* 其实际请求地址为：```"www.baidu.com?page=1"```点击更多是时，1也会随之而变化。
-* 若setUrlPara传入```"peopleId"```和```"1"```则表示在上继续添加参数。
-* 地址即为：```"www.baidu.com?page=1&peopleId=1"```
-* setFootHint方法可更改footer的提示信息。默认普通提示为```"More..."```加载中为```"onLoading..."```
-* setFooterBackground方法可以用来设置你自己的footer背景，我这里用了一个xml来表示。默认为空白。
-* setProgressDrawable方法可以用来设置你的进度条样式，其原理是一张图片在进行旋转，因此，你只需要传一张圆形的进度条图片就行，它会自己转的。
-* setOnCompleteListener方法，这个很明显是请求完成以后的回调了，在onSuccess中会带进来一个Sring类型的str参数，这个参数就是你请求以后的结果，也就是你所请求的json数据。onFail的是失败的毁掉，比如没有网络之类的。这两个，请大家自行处理。
-* 最后记得执行一下showResult来运行整个过程。
+* showResult方法，是开始请求的入口，想有数据，就一定要调用这个方法。
+* showResult有两个重载的方法```"RequestListView.showResult(url)"```和```"RequestListView.showResult(url,params)"```如果没有参数或者想直接把参数写在url上，都是可以的，直接调用前者。如果有参数就new一个HashMap来存参数，再传入后者即可。
+* url是必填的。如果为null or empty都会抛出异常。
+* 分页显示都有一个请求的页码的参数名，默认为```"page"```。比如，showResult重的url参数为```"www.baidu.com"```，若不setPageName，那么该请求地址实际为：```"www.baidu.com?page=1"```若setPageName为```"p"```，则请求地址为：```"www.baidu.com?p=1"```。点击更多的时候，1也会随之而变化。
+* setRequestType方法，可以设置请求的类型。二选一。```"RequestListView.TYPE_GET"```和```"RequestListView.TYPE_POST"```，默认为get。
+* setFooterHint方法，可更改footer的提示信息。默认普通提示为```"More..."```加载中为```"onLoading..."```
+* setFooterBackgroundResource方法，可以用来设置你自己的footer背景，我这里用了一个xml来表示。默认为空白。
+* setFooterProgressDrawableResource方法，可以用来设置你的进度条样式，其原理是一张图片在进行旋转，因此，你只需要传一张圆形的进度条图片就行，它会自己转的。
+* setOnCompleteListener方法，请求以后的回调。onSuccess为成功，onFail为失败。
+* onSuccess(str)，str为请求返回的数据。请自行解析。
+* onFail(str)，str为失败的原因。这里没设计好，应改改成一个int类型的常量。暂时无视这个str就行，后面会改。
 
 ## 友情提示
 ```xml
@@ -245,3 +241,15 @@ mListView.showResult();
 
 **2013/10/17**
 * 最后更新时间改为24小时制。
+
+**2014/04/28**
+* 重新整理整个项目。
+* 去除下拉刷新。
+* 修改部分方法名称。
+* 修复网络错误是页码数字不正确的情况。
+* 增加setRequestType。
+* 修改传入参数的方式。
+
+**2014/04/29**
+* 添加注释。
+* 更新ReadMe。
