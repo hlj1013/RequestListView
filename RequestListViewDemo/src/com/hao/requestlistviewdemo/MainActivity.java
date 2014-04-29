@@ -40,7 +40,7 @@ public class MainActivity extends Activity {
 		mList = new ArrayList<ArrayBean>();
 		mAdapter = new ArrayAdapter(mList, this);
 
-		mListView = (RequestListView) findViewById(R.id.relv);
+		mListView = (RequestListView) findViewById(R.id.requestlv);
 		mListView.setAdapter(mAdapter);
 		mListView.showResult("http://gitdemo.duapp.com/RequestData", new HashMap<String, String>());
 		mListView.setOnCompleteListener(new OnCompleteListener() {
