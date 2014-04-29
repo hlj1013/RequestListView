@@ -253,3 +253,4 @@ mListView.setOnCompleteListener(new OnCompleteListener() {
 **2014/04/29**
 * 添加注释。
 * 更新ReadMe。
+* 修复TYPE_GET时链接拼凑错误的问题。
