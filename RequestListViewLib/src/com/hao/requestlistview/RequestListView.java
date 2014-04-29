@@ -43,34 +43,32 @@ public class RequestListView extends ListView {
 	private Context mContext;
 	private LayoutInflater mInflater;
 
-	private AQuery mAq;
-
 	private RelativeLayout mFooterView;// footer 布局
-	private TextView mFooterTextView; // footer 文字textview
+	private TextView mFooterTextView; // footer 文字 textview
 	private ImageView mFooterProgress;
 
-	private int mFooterBackground;
-	private int mFooterProgressDrawable;
+	private int mFooterBackgroundResource; // footer 背景 resource
+	private int mFooterProgressDrawableResource;// footer 进度条 resource
 
-	private String mFooterTextLoading = "Loading...";
-	private String mFooterTextMore = "More...";
+	private String mFooterTextLoading = "Loading..."; // 加载的提示文字
+	private String mFooterTextMore = "More..."; // 更多的提示文字
 
 	public static final int TYPE_GET = 0; // get请求类型
 	public static final int TYPE_POST = 1; // post请求类型
 
-	private int mRequestType;
-	private String mPageName = "page";
+	private int mRequestType; // 请求类型
 
-	private OnCompleteListener mOnCompleteListener;
+	private String mPageName = "page"; // 页码参数
+	private int mPageCount; // 页数
 
-	private int mPageCount;
+	private OnCompleteListener mOnCompleteListener; // 完成的监听
 
-	private String mUrl;
-	private HashMap<String, String> mParams;
+	private String mUrl; // 请求地址
+	private HashMap<String, String> mParams; // 请求参数
 
-	private static AQuery aq;
+	private static AQuery aq; // aq对象
 
-	private static AQuery getInstance(Context context) {
+	private static AQuery getAQueryInstance(Context context) {
 		if (aq == null) {
 			aq = new AQuery(context);
 			return aq;
@@ -120,37 +118,125 @@ public class RequestListView extends ListView {
 
 			@Override
 			public void onClick(View v) {
-				ajax(mUrl, mParams, mPageName, ++mPageCount);
+				// 设置加载中的文字提示
+				mFooterTextView.setText(mFooterTextLoading);
+				// 请求
+				ajax();
 			}
 		});
 
 	}
 
+	/**
+	 * 
+	 * @Title: setFooterHint
+	 * @Description: 设置footer的文字提示
+	 * @param @param loading
+	 * @param @param more
+	 * @return void
+	 * @throws
+	 */
+	public void setFooterHint(String loading, String more) {
+		this.mFooterTextLoading = loading;
+		this.mFooterTextMore = more;
+	}
+
+	/**
+	 * 
+	 * @Title: setRequestType
+	 * @Description: 设置请求类型
+	 * @param @param type
+	 * @return void
+	 * @throws
+	 */
+	public void setRequestType(int type) {
+		this.mRequestType = type;
+	}
+
+	/**
+	 * 
+	 * @Title: setFooterBackgroundResource
+	 * @Description: 设置footer背景的resource
+	 * @param @param id
+	 * @return void
+	 * @throws
+	 */
+	public void setFooterBackgroundResource(int id) {
+		this.mFooterBackgroundResource = id;
+	}
+
+	/**
+	 * 
+	 * @Title: setFooterProgressDrawableResource
+	 * @Description: 设置footer进度条的resource
+	 * @param @param id
+	 * @return void
+	 * @throws
+	 */
+	public void setFooterProgressDrawableResource(int id) {
+		this.mFooterProgressDrawableResource = id;
+	}
+
+	/**
+	 * 
+	 * @Title: showResult
+	 * @Description: 开始加载数据
+	 * @param @param url
+	 * @return void
+	 * @throws
+	 */
 	public void showResult(String url) {
 		this.mUrl = url;
 		this.mParams = new HashMap<String, String>();
 		getException();
 		showFooterView();
-		ajax(mUrl, mParams, mPageName, ++mPageCount);
+		ajax();
 	}
 
+	/**
+	 * 
+	 * @Title: showResult
+	 * @Description: 开始加载数据
+	 * @param @param url
+	 * @param @param params
+	 * @return void
+	 * @throws
+	 */
 	public void showResult(String url, HashMap<String, String> params) {
 		this.mUrl = url;
 		this.mParams = params;
 		getException();
 		showFooterView();
-		ajax(mUrl, mParams, mPageName, ++mPageCount);
+		ajax();
 	}
 
+	/**
+	 * 
+	 * @Title: showResult
+	 * @Description: 开始加载数据
+	 * @param @param url
+	 * @param @param params
+	 * @param @param pageName
+	 * @return void
+	 * @throws
+	 */
 	public void showResult(String url, HashMap<String, String> params, String pageName) {
 		this.mUrl = url;
 		this.mParams = params;
 		this.mPageName = pageName;
 		getException();
 		showFooterView();
-		ajax(mUrl, mParams, mPageName, ++mPageCount);
+		ajax();
 	}
 
+	/**
+	 * 
+	 * @Title: getException
+	 * @Description: 判断一些必填参数的异常
+	 * @param
+	 * @return void
+	 * @throws
+	 */
 	private void getException() {
 		if (mUrl == null || mUrl == "") {
 			// 如果url参数不正确
@@ -158,44 +244,73 @@ public class RequestListView extends ListView {
 		}
 	}
 
+	/**
+	 * 
+	 * @Title: showFooterView
+	 * @Description: 正在加载时对的footer
+	 * @param
+	 * @return void
+	 * @throws
+	 */
+	@SuppressWarnings("deprecation")
 	private void showFooterView() {
-		if (mFooterProgressDrawable != 0) {
+		if (mFooterProgressDrawableResource != 0) {
 			// 如果进度条id正确，则加载旋转动画
 			mFooterProgress.setVisibility(View.VISIBLE);
-			mFooterProgress.startAnimation(getAnim(mContext, mFooterProgressDrawable, mFooterProgress));
+			Drawable drawable = getResources().getDrawable(mFooterProgressDrawableResource);
+			mFooterProgress.setBackgroundDrawable(drawable);
+			mFooterProgress.startAnimation(getAnim());
 		}
-		if (mFooterBackground != 0) {
+		if (mFooterBackgroundResource != 0) {
 			// 如果footer的背景id正确，则加载footer背景
-			mFooterView.setBackgroundResource(mFooterBackground);
+			mFooterView.setBackgroundResource(mFooterBackgroundResource);
 		}
 
 		// 设置加载中的文字提示
 		mFooterTextView.setText(mFooterTextLoading);
 	}
 
-	private void ajax(String url, HashMap<String, String> params, String mPageName, int pageCount) {
+	/**
+	 * 
+	 * @Title: ajax
+	 * @Description: 根据type执行对应的请求方式
+	 * @param
+	 * @return void
+	 * @throws
+	 */
+	private void ajax() {
 		switch (mRequestType) {
 		case TYPE_GET:
-			doGet(url, params, mPageName, pageCount);
+			doGet();
 			break;
 		case TYPE_POST:
-			doPost(url, params, mPageName, pageCount);
+			doPost();
 			break;
 		}
 	}
 
-	private void doGet(String url, HashMap<String, String> params, String mPageName, int pageCount) {
-		String url1 = url + "?" + mPageName + "=" + pageCount;
-		if (params.size() != 0) {
-			Set<Map.Entry<String, String>> mapEntrySet = params.entrySet();
+	/**
+	 * 
+	 * @Title: doGet
+	 * @Description: get
+	 * @param
+	 * @return void
+	 * @throws
+	 */
+	private void doGet() {
+		// 设置参数
+		String url1 = mUrl + "?" + mPageName + "=" + ++mPageCount;
+		if (mParams.size() != 0) {
+			Set<Map.Entry<String, String>> mapEntrySet = mParams.entrySet();
 			Iterator<Map.Entry<String, String>> mapEntryIterator = mapEntrySet.iterator();
 			while (mapEntryIterator.hasNext()) {
 				Map.Entry<String, String> entry = mapEntryIterator.next();
-				url = url + "&" + entry.getKey() + "=" + entry.getValue();
+				mUrl = mUrl + "&" + entry.getKey() + "=" + entry.getValue();
 			}
 		}
 
-		getInstance(mContext).ajax(url1, String.class, 15 * 60 * 1000, new AjaxCallback<String>() {
+		// 请求
+		getAQueryInstance(mContext).ajax(url1, String.class, 15 * 60 * 1000, new AjaxCallback<String>() {
 			@Override
 			public void callback(String url, String str, AjaxStatus status) {
 				if (str != null) {
@@ -210,9 +325,19 @@ public class RequestListView extends ListView {
 		});
 	}
 
-	private void doPost(String url, HashMap<String, String> params, String mPageName, int pageCount) {
-		params.put(mPageName, pageCount + "");
-		mAq.ajax(url, params, String.class, new AjaxCallback<String>() {
+	/**
+	 * 
+	 * @Title: doPost
+	 * @Description: post
+	 * @param
+	 * @return void
+	 * @throws
+	 */
+	private void doPost() {
+		// 设置参数
+		mParams.put(mPageName, ++mPageCount + "");
+		// 请求
+		getAQueryInstance(mContext).ajax(mUrl, mParams, String.class, new AjaxCallback<String>() {
 
 			@Override
 			public void callback(String url, String str, AjaxStatus status) {
@@ -228,6 +353,15 @@ public class RequestListView extends ListView {
 		});
 	}
 
+	/**
+	 * 
+	 * @Title: getRequestError
+	 * @Description: 得到请求后错误类型
+	 * @param @param errorCode
+	 * @param @return
+	 * @return String
+	 * @throws
+	 */
 	private String getRequestError(int errorCode) {
 		switch (errorCode) {
 		case AjaxStatus.AUTH_ERROR:
@@ -242,9 +376,13 @@ public class RequestListView extends ListView {
 	}
 
 	/**
-	 * 完成后执行的方法
 	 * 
-	 * @param res
+	 * @Title: onComplete
+	 * @Description: 完成后执行的方法
+	 * @param @param isSuccess
+	 * @param @param res
+	 * @return void
+	 * @throws
 	 */
 	public void onComplete(boolean isSuccess, String res) {
 		mFooterTextView.setText(mFooterTextMore);
@@ -302,9 +440,7 @@ public class RequestListView extends ListView {
 	 * @throws
 	 */
 	@SuppressWarnings("deprecation")
-	public RotateAnimation getAnim(Context context, int progressDrawable, ImageView progress) {
-		Drawable drawable = context.getResources().getDrawable(progressDrawable);
-		progress.setBackgroundDrawable(drawable);
+	public RotateAnimation getAnim() {
 		RotateAnimation anim = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 		LinearInterpolator lin = new LinearInterpolator();
 		anim.setInterpolator(lin);

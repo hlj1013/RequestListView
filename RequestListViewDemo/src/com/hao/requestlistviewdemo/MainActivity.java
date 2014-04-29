@@ -21,6 +21,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Html;
 
 import com.alibaba.fastjson.JSON;
 import com.hao.requestlistview.RequestListView;
@@ -31,7 +32,7 @@ public class MainActivity extends Activity {
 	private RequestListView mListView;
 	private List<ArrayBean> mList;
 	private ArrayAdapter mAdapter;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -42,18 +43,18 @@ public class MainActivity extends Activity {
 
 		mListView = (RequestListView) findViewById(R.id.requestlv);
 		mListView.setAdapter(mAdapter);
-		mListView.showResult("http://gitdemo.duapp.com/RequestData", new HashMap<String, String>());
+		mListView.showResult("http://gitdemo.duapp.com/RequestData");
 		mListView.setOnCompleteListener(new OnCompleteListener() {
-			
+
 			@Override
 			public void onSuccess(String str) {
 				mList.addAll(JSON.parseArray(str, ArrayBean.class));
 				mAdapter.notifyDataSetChanged();
 			}
-			
+
 			@Override
 			public void onFail(String str) {
-				
+
 			}
 		});
 
