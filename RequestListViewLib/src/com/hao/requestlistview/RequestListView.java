@@ -159,7 +159,7 @@ public class RequestListView extends ListView {
 	public void setRequestType(int type) {
 		this.mRequestType = type;
 	}
-	
+
 	/**
 	 * 
 	 * @Title: setPageName
@@ -168,8 +168,8 @@ public class RequestListView extends ListView {
 	 * @return void
 	 * @throws
 	 */
-	public void setPageName(String pageName){
-		this.mPageName=pageName;
+	public void setPageName(String pageName) {
+		this.mPageName = pageName;
 	}
 
 	/**

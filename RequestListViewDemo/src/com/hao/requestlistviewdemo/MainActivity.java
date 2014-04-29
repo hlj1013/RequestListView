@@ -39,7 +39,7 @@ public class MainActivity extends Activity {
 
 		mList = new ArrayList<ArrayBean>();
 		mAdapter = new ArrayAdapter(mList, this);
-		
+
 		mListView = (RequestListView) findViewById(R.id.requestlv);
 		mListView.setAdapter(mAdapter);
 		mListView.setFooterBackgroundResource(R.drawable.footer_bg);
@@ -47,9 +47,9 @@ public class MainActivity extends Activity {
 		mListView.setFooterHint("正在加载...", "更多...");
 		mListView.setRequestType(RequestListView.TYPE_GET);
 		mListView.setPageName("page");
-		HashMap<String, String> params=new HashMap<String, String>();
+		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("param", "param");
-		mListView.showResult("http://gitdemo.duapp.com/RequestData",params);
+		mListView.showResult("http://gitdemo.duapp.com/RequestData", params);
 		mListView.setOnCompleteListener(new OnCompleteListener() {
 
 			@Override

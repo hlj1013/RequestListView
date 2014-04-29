@@ -59,8 +59,7 @@ public class ArrayAdapter extends BaseAdapter {
 		View view = arg1;
 
 		if (view == null) {
-			view = LayoutInflater.from(mContext).inflate(R.layout.item_array,
-					null);
+			view = LayoutInflater.from(mContext).inflate(R.layout.item_array, null);
 			mHolder = new ViewHolder();
 			mHolder.name = (TextView) view.findViewById(R.id.name);
 			mHolder.email = (TextView) view.findViewById(R.id.email);
