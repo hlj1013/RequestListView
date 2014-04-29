@@ -21,7 +21,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.text.Html;
 
 import com.alibaba.fastjson.JSON;
 import com.hao.requestlistview.RequestListView;
@@ -40,10 +39,17 @@ public class MainActivity extends Activity {
 
 		mList = new ArrayList<ArrayBean>();
 		mAdapter = new ArrayAdapter(mList, this);
-
+		
 		mListView = (RequestListView) findViewById(R.id.requestlv);
 		mListView.setAdapter(mAdapter);
-		mListView.showResult("http://gitdemo.duapp.com/RequestData");
+		mListView.setFooterBackgroundResource(R.drawable.footer_bg);
+		mListView.setFooterProgressDrawableResource(R.drawable.progress);
+		mListView.setFooterHint("正在加载...", "更多...");
+		mListView.setRequestType(RequestListView.TYPE_GET);
+		mListView.setPageName("page");
+		HashMap<String, String> params=new HashMap<String, String>();
+		params.put("param", "param");
+		mListView.showResult("http://gitdemo.duapp.com/RequestData",params);
 		mListView.setOnCompleteListener(new OnCompleteListener() {
 
 			@Override

@@ -120,6 +120,13 @@ public class RequestListView extends ListView {
 			public void onClick(View v) {
 				// 设置加载中的文字提示
 				mFooterTextView.setText(mFooterTextLoading);
+				// 加载中，锁定按钮
+				mFooterView.setClickable(false);
+				if (mFooterProgressDrawableResource != 0) {
+					// 如果传入了图片id，那么执行旋转
+					mFooterProgress.setVisibility(View.VISIBLE);
+					mFooterProgress.startAnimation(getAnim());
+				}
 				// 请求
 				ajax();
 			}
@@ -151,6 +158,18 @@ public class RequestListView extends ListView {
 	 */
 	public void setRequestType(int type) {
 		this.mRequestType = type;
+	}
+	
+	/**
+	 * 
+	 * @Title: setPageName
+	 * @Description: 设置页码的参数名
+	 * @param @param pageName
+	 * @return void
+	 * @throws
+	 */
+	public void setPageName(String pageName){
+		this.mPageName=pageName;
 	}
 
 	/**
@@ -205,25 +224,6 @@ public class RequestListView extends ListView {
 	public void showResult(String url, HashMap<String, String> params) {
 		this.mUrl = url;
 		this.mParams = params;
-		getException();
-		showFooterView();
-		ajax();
-	}
-
-	/**
-	 * 
-	 * @Title: showResult
-	 * @Description: 开始加载数据
-	 * @param @param url
-	 * @param @param params
-	 * @param @param pageName
-	 * @return void
-	 * @throws
-	 */
-	public void showResult(String url, HashMap<String, String> params, String pageName) {
-		this.mUrl = url;
-		this.mParams = params;
-		this.mPageName = pageName;
 		getException();
 		showFooterView();
 		ajax();
@@ -299,18 +299,18 @@ public class RequestListView extends ListView {
 	 */
 	private void doGet() {
 		// 设置参数
-		String url1 = mUrl + "?" + mPageName + "=" + ++mPageCount;
+		String url = mUrl + "?" + mPageName + "=" + ++mPageCount;
 		if (mParams.size() != 0) {
 			Set<Map.Entry<String, String>> mapEntrySet = mParams.entrySet();
 			Iterator<Map.Entry<String, String>> mapEntryIterator = mapEntrySet.iterator();
 			while (mapEntryIterator.hasNext()) {
 				Map.Entry<String, String> entry = mapEntryIterator.next();
-				mUrl = mUrl + "&" + entry.getKey() + "=" + entry.getValue();
+				url = url + "&" + entry.getKey() + "=" + entry.getValue();
 			}
 		}
 
 		// 请求
-		getAQueryInstance(mContext).ajax(url1, String.class, 15 * 60 * 1000, new AjaxCallback<String>() {
+		getAQueryInstance(mContext).ajax(url, String.class, 15 * 60 * 1000, new AjaxCallback<String>() {
 			@Override
 			public void callback(String url, String str, AjaxStatus status) {
 				if (str != null) {
@@ -439,7 +439,6 @@ public class RequestListView extends ListView {
 	 * @return RotateAnimation
 	 * @throws
 	 */
-	@SuppressWarnings("deprecation")
 	public RotateAnimation getAnim() {
 		RotateAnimation anim = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 		LinearInterpolator lin = new LinearInterpolator();
