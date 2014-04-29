@@ -10,6 +10,15 @@
         android:layout_height="match_parent"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
+        android:scrollbars="none"
+        android:visibility="gone" />
+
+    <com.hao.requestlistview.ReListView
+        android:id="@+id/relv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:scrollbars="none" />
 
 </RelativeLayout>
