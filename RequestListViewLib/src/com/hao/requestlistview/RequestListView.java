@@ -56,6 +56,10 @@ public class RequestListView extends ListView {
 	public static final int TYPE_GET = 0; // get请求类型
 	public static final int TYPE_POST = 1; // post请求类型
 
+	public static final int ERROR_NETWORK = AjaxStatus.NETWORK_ERROR;
+	public static final int ERROR_TRANSFORM = AjaxStatus.TRANSFORM_ERROR;
+	public static final int ERROR_AUTH = AjaxStatus.AUTH_ERROR;
+
 	private int mRequestType; // 请求类型
 
 	private String mPageName = "page"; // 页码参数
@@ -318,7 +322,7 @@ public class RequestListView extends ListView {
 					onComplete(true, str);
 				} else {
 					// 失败
-					onComplete(false, getRequestError(status.getCode()));
+					onComplete(false, status.getCode() + "");
 				}
 				super.callback(url, str, status);
 			}
@@ -346,33 +350,11 @@ public class RequestListView extends ListView {
 					onComplete(true, str);
 				} else {
 					// 失败
-					onComplete(false, getRequestError(status.getCode()));
+					onComplete(false, status.getCode() + "");
 				}
 				super.callback(url, str, status);
 			}
 		});
-	}
-
-	/**
-	 * 
-	 * @Title: getRequestError
-	 * @Description: 得到请求后错误类型
-	 * @param @param errorCode
-	 * @param @return
-	 * @return String
-	 * @throws
-	 */
-	private String getRequestError(int errorCode) {
-		switch (errorCode) {
-		case AjaxStatus.AUTH_ERROR:
-			return "AUTH_ERROR";
-		case AjaxStatus.NETWORK_ERROR:
-			return "NETWORK_ERROR";
-		case AjaxStatus.TRANSFORM_ERROR:
-			return "TRANSFORM_ERROR";
-		default:
-			return "ERROR";
-		}
 	}
 
 	/**
@@ -394,7 +376,7 @@ public class RequestListView extends ListView {
 				mOnCompleteListener.onSuccess(res);
 			} else {
 				mPageCount = mPageCount - 1;
-				mOnCompleteListener.onFail(res);
+				mOnCompleteListener.onFail(Integer.valueOf(res));
 			}
 		}
 	}
@@ -424,7 +406,7 @@ public class RequestListView extends ListView {
 
 		public void onSuccess(String str);
 
-		public void onFail(String str);
+		public void onFail(int errorCode);
 
 	}
 

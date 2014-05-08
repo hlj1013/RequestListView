@@ -59,8 +59,21 @@ public class MainActivity extends Activity {
 			}
 
 			@Override
-			public void onFail(String str) {
+			public void onFail(int errorCode) {
+				switch (errorCode) {
+				case RequestListView.ERROR_AUTH:
+					
+					break;
+				case RequestListView.ERROR_NETWORK:
 
+					break;
+				case RequestListView.ERROR_TRANSFORM:
+					
+					break;
+				default:
+
+					break;
+				}
 			}
 		});
 
